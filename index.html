@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html>
+<head>
+    
+    <title>Quadratic Solver and Grade Converter</title>
+    <style>
+        body {
+            font-family: Arial(solid);
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .section {
+            border: 0  Arial   #f7eaea;
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 25px;
+            background: #8788b3;
+        }
+
+        .form-group {
+            margin: 10px 0;
+        }
+
+        label {
+            display: inline-block;
+            width: 120px;
+            font-weight: bold;
+        }
+
+        input {
+            padding: 8px;
+            width: 200px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        button {
+            padding: 10px 15px;
+            margin: 5px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .solve {
+            background: green;
+            color: white;
+        }
+
+        .reset {
+            background: red;
+            color: white;
+        }
+
+        .result {
+            margin-top: 15px;
+            padding: 10px;
+            background: #7ae0ff;
+            border-radius: 4px;
+        }
+
+        .error {
+            color: red;
+            font-size: 13px;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Quadratic Equation Solver and Grade Converter</h1>
+
+    <!-- Quadratic Solver -->
+    <div class="section">
+        <h2>Quadratic Equation Solver</h2>
+        <p>Find roots of ax² + bx + c = 0</p>
+
+        <div class="form-group">
+            <label>a:</label>
+            <input type="number" id="a">
+            <div class="error" id="error-a"></div>
+        </div>
+
+        <div class="form-group">
+            <label>b:</label>
+            <input type="number" id="b">
+            <div class="error" id="error-b"></div>
+        </div>
+
+        <div class="form-group">
+            <label>c:</label>
+            <input type="number" id="c">
+            <div class="error" id="error-c"></div>
+        </div>
+
+        <button class="solve" onclick="solve()">Solve</button>
+        <button class="reset" onclick="clearQuadratic()">Reset</button>
+
+        <div class="result" id="quadResult"></div>
+    </div>
+
+    <!-- Grade Converter -->
+    <div class="section">
+        <h2>Grade Converter</h2>
+        <p>Enter student name and score (0 - 100)</p>
+
+        <div class="form-group">
+            <label>Student Name:</label>
+            <input type="text" id="studentName">
+            <div class="error" id="error-name"></div>
+        </div>
+
+        <div class="form-group">
+            <label>Score:</label>
+            <input type="number" id="score">
+            <div class="error" id="error-score"></div>
+        </div>
+
+        <button class="solve" onclick="convert()">Convert</button>
+        <button class="reset" onclick="clearGrade()">Reset</button>
+
+        <div class="result" id="gradeResult"></div>
+    </div>
+
+    <script>
+        function solve() {
+            var a = parseFloat(document.getElementById("a").value);
+            var b = parseFloat(document.getElementById("b").value);
+            var c = parseFloat(document.getElementById("c").value);
+
+            document.getElementById("error-a").innerHTML = "";
+            document.getElementById("error-b").innerHTML = "";
+            document.getElementById("error-c").innerHTML = "";
+            document.getElementById("quadResult").innerHTML = "";
+
+            if (isNaN (a) || a == 0) {
+                document.getElementById("error-a").innerHTML = "Enter valid a (not zero)";
+                return;
+            }
+            if (isNaN (b)) {
+                document.getElementById("error-b").innerHTML = "Enter valid b";
+                return;
+            }
+            if (isNaN(c)) {
+                document.getElementById("error-c").innerHTML = "Enter valid c";
+                return;
+            }
+
+            var D = b * b - 4 * a * c;
+            var msg = "<h3>Solution</h3>";
+            msg += "<p>" + a + "x² + " + b + "x + " + c + " = 0</p>";
+            msg += "<p>D = " + D.toFixed(2) + "</p>";
+
+            if (D > 0) {
+                var x1 = (-b + Math.sqrt(D)) / (2 * a);
+                var x2 = (-b - Math.sqrt(D)) / (2 * a);
+                msg += "<p>Two real roots: " + x1.toFixed(4) + " and " + x2.toFixed(4) + "</p>";
+            } else if (D == 0) {
+                var x = -b / (2 * a);
+                msg += "<p>One root: " + x.toFixed(4) + "</p>";
+            } else {
+                var real = (-b / (2 * a)).toFixed(4);
+                var imag = (Math.sqrt(-D) / (2 * a)).toFixed(4);
+                msg += "<p>Complex roots: " + real + " ± " + imag + "i</p>";
+            }
+
+            document.getElementById("quadResult").innerHTML = msg;
+        }
+
+        function convert() {
+            var name = document.getElementById("studentName").value.trim();
+            var score = parseInt(document.getElementById("score").value);
+
+            document.getElementById("error-name").innerHTML = "";
+            document.getElementById("error-score").innerHTML = "";
+            document.getElementById("gradeResult").innerHTML = "";
+
+            if (name === "") {
+                document.getElementById("error-name").innerHTML = "Enter student name";
+                return;
+            }
+
+            if (isNaN(score) || score < 0 || score > 100) {
+                document.getElementById("error-score").innerHTML = "Enter number between 0 and 100";
+                return;
+            }
+
+            var grade;
+            if (score >= 85) grade = "A+";
+            else if (score >= 75) grade = "A";
+            else if (score >= 65) grade = "B+";
+            else if (score >= 60) grade = "B";
+            else if (score >= 55) grade = "C+";
+            else if (score >= 50) grade = "C";
+            else grade = "D";
+
+            document.getElementById("gradeResult").innerHTML =
+                "<h3>Result</h3><p>Student: " + name + "<br>Score: " + score + "<br>Grade: " + grade + "</p>";
+        }
+
+        function clearQuadratic() {
+            document.getElementById("a").value = "";
+            document.getElementById("b").value = "";
+            document.getElementById("c").value = "";
+            document.getElementById("quadResult").innerHTML = "";
+            document.getElementById("error-a").innerHTML = "";
+            document.getElementById("error-b").innerHTML = "";
+            document.getElementById("error-c").innerHTML= "";
+        }
+
+        function clearGrade() {
+            document.getElementById("studentName").value = "";
+            document.getElementById("score").value = "";
+            document.getElementById("gradeResult").innerHTML = "";
+            document.getElementById("error-name").innerHTML = "";
+            document.getElementById("error-score").innerHTML = "";
+        }
+    </script>
+</body>
+</html>
